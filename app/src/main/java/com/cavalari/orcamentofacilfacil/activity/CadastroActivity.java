@@ -1,5 +1,6 @@
 package com.cavalari.orcamentofacilfacil.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -9,13 +10,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cavalari.orcamentofacilfacil.R;
+import com.cavalari.orcamentofacilfacil.config.appsettings;
 import com.cavalari.orcamentofacilfacil.model.Usuario;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class CadastroActivity extends AppCompatActivity {
 
     private EditText campoNome, campoEmail, campoSenha;
     private Button botaoCadastrar;
     private Usuario usuario;
+    private FirebaseAuth autentificacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,5 +57,19 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
 
-    private void cadastrarUsuario() {}
+    private void cadastrarUsuario() {
+        autentificacao = appsettings.getFireBaseAutentificacao();
+        autentificacao.createUserWithEmailAndPassword(
+                usuario.getEmail(), usuario.getSenha()
+        ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(CadastroActivity.this, "Usuário cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(CadastroActivity.this, "Error ao cadastrar usuário!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "365642884756",
+    "project_id": "orcamentofacilfacil",
+    "storage_bucket": "orcamentofacilfacil.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365642884756:android:7672addc62f27525e07681",
+        "android_client_info": {
+          "package_name": "com.cavalari.orcamentofacilfacil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365642884756-102jlq1e5tbchgekapd6h234tgdfdr46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAixFWBFlQQVIjHaGSu5B1IBBbmQnO4OEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365642884756-102jlq1e5tbchgekapd6h234tgdfdr46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
