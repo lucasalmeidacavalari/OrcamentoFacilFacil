@@ -7,4 +7,16 @@
     <color name="orange">#FFB84C</color>
     <color name="grey">#C4CDD5</color>
     <color name="white">#FFFFFFFF</color>
+
+    //Receitas
+    <color name="colorPrimaryReceitas">#83BD75</color>
+    <color name="colorDarkReceitas">#4E944F</color>
+    <color name="colorAccentReceitas">#B4E197</color>
+
+    //Despesas
+    <color name="colorPrimaryDespesas">#5F8D4E</color>
+    <color name="colorDarkDespesas">#285430</color>
+    <color name="colorAccentDespesas">#A4BE7B</color>
+
+
 </resources>

@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void goHome(){
+    public void goHome() {
         startActivity(new Intent(this, HomeActivity.class));
         finish();
     }

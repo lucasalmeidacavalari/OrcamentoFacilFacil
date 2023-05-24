@@ -40,6 +40,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-analytics'
 
+    //FloatingActionButton
+    implementation 'com.github.clans:fab:1.6.4'
+
     //Material Intro
     implementation 'com.heinrichreimersoftware:material-intro:2.0.0'
     //Grandle
