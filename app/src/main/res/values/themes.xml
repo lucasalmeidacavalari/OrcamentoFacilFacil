@@ -6,5 +6,23 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Theme de Despesas -->
+    <style name="despesaTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:colorPrimary">@color/colorPrimaryDespesas</item>
+        <item name="android:colorPrimaryDark">@color/colorDarkDespesas</item>
+        <item name="android:colorAccent">@color/colorAccentDespesas</item>
+    </style>
+
+    <!-- Theme de Receitas -->
+    <style name="receitaTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:colorPrimary">@color/colorPrimaryReceitas</item>
+        <item name="android:colorPrimaryDark">@color/colorDarkReceitas</item>
+        <item name="android:colorAccent">@color/colorAccentReceitas</item>
+    </style>
+
     <style name="Theme.OrcamentoFacilFacil" parent="Base.Theme.OrcamentoFacilFacil" />
 </resources>

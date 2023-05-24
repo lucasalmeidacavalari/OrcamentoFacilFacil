@@ -1,5 +1,6 @@
 package com.cavalari.orcamentofacilfacil.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.cavalari.orcamentofacilfacil.databinding.ActivityHomeBinding;
@@ -29,10 +30,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void adicionarDespesas(View view) {
-
+        startActivity(new Intent(this, DespesaActivity.class));
     }
 
     public void adicionarReceitas(View view) {
-
+        startActivity(new Intent(this, ReceitasActivity.class));
     }
 }
