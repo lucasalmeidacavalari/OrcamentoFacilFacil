@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
 public class Movimentacao {
+    private String movimentacaoId;
     private String data;
     private String categoria;
     private String descricao;
@@ -68,5 +69,13 @@ public class Movimentacao {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    public String getMovimentacaoId() {
+        return movimentacaoId;
+    }
+
+    public void setMovimentacaoId(String movimentacaoId) {
+        this.movimentacaoId = movimentacaoId;
     }
 }

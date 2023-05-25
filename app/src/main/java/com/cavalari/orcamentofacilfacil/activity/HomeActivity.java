@@ -1,5 +1,6 @@
 package com.cavalari.orcamentofacilfacil.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import com.cavalari.orcamentofacilfacil.config.appsettings;
 import com.cavalari.orcamentofacilfacil.databinding.ActivityHomeBinding;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     private Double resumoUsuario = 0.0;
     private String mesAno;
     private List<Movimentacao> movimentacaos = new ArrayList<>();
+    private Movimentacao movimentacao;
     private FirebaseAuth auth = appsettings.getFireBaseAutentificacao();
     private DatabaseReference ref = appsettings.getFirebaseDataBase();
     private DatabaseReference moveRef;
@@ -76,6 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         textSaudacao = findViewById(R.id.textSaudacao);
         recyclerView = findViewById(R.id.recyclerMovimentos);
         configureCalendarView();
+        swipe();
 
         //Recycler
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -126,13 +131,13 @@ public class HomeActivity extends AppCompatActivity {
         CharSequence meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
         calendarView.setTitleMonths(meses);
         CalendarDay day = calendarView.getCurrentDate();
-        String mes = String.format("%02d",day.getMonth());
-        mesAno = String.valueOf(mes+""+day.getYear());
+        String mes = String.format("%02d", day.getMonth());
+        mesAno = String.valueOf(mes + "" + day.getYear());
         calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-                String mes = String.format("%02d",date.getMonth());
-                mesAno = String.valueOf(mes+""+date.getYear());
+                String mes = String.format("%02d", date.getMonth());
+                mesAno = String.valueOf(mes + "" + date.getYear());
                 moveRef.removeEventListener(valueEventListenerMovimentacoes);
                 recupereMovimentacoes();
             }
@@ -164,9 +169,8 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    public void recupereMovimentacoes(){
+    public void recupereMovimentacoes() {
         String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
-        Log.i("Test", mesAno);
         moveRef = ref.child("movimentacao")
                 .child(idUsuario)
                 .child(mesAno);
@@ -175,8 +179,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 movimentacaos.clear();
-                for (DataSnapshot dados: snapshot.getChildren()){
+                for (DataSnapshot dados : snapshot.getChildren()) {
                     Movimentacao movimentacao = dados.getValue(Movimentacao.class);
+                    movimentacao.setMovimentacaoId(dados.getKey());
                     movimentacaos.add(movimentacao);
                 }
                 adapterMovimentacao.notifyDataSetChanged();
@@ -187,5 +192,64 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void swipe() {
+        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                excluirMovimentacao(viewHolder);
+            }
+        };
+
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
+    }
+
+    public void excluirMovimentacao(@NonNull RecyclerView.ViewHolder viewHolder) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Excluir Movimentação");
+        builder.setMessage("Você tem certeza que deseja excluir?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int position = viewHolder.getAbsoluteAdapterPosition();
+                movimentacao = movimentacaos.get(position);
+                String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
+                moveRef = ref.child("movimentacao")
+                        .child(idUsuario)
+                        .child(mesAno);
+                moveRef.child(movimentacao.getMovimentacaoId()).removeValue();
+                adapterMovimentacao.notifyItemRemoved(position);
+                atualizaSaldo();
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapterMovimentacao.notifyDataSetChanged();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void atualizaSaldo(){
+
     }
 }
