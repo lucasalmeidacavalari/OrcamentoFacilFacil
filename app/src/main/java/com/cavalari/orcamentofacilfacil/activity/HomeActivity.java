@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import com.cavalari.orcamentofacilfacil.adapter.AdapterMovimentacao;
 import com.cavalari.orcamentofacilfacil.config.appsettings;
 import com.cavalari.orcamentofacilfacil.databinding.ActivityHomeBinding;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import com.cavalari.orcamentofacilfacil.R;
 import com.cavalari.orcamentofacilfacil.helper.Base64Custom;
+import com.cavalari.orcamentofacilfacil.model.Movimentacao;
 import com.cavalari.orcamentofacilfacil.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,19 +33,24 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
     private MaterialCalendarView calendarView;
     private TextView textSaudacao, textSaldo;
+    private RecyclerView recyclerView;
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
+    private List<Movimentacao> movimentacaos = new ArrayList<>();
     private FirebaseAuth auth = appsettings.getFireBaseAutentificacao();
     private DatabaseReference ref = appsettings.getFirebaseDataBase();
     private DatabaseReference usuarioref;
     private ValueEventListener valueEventListener;
+    private AdapterMovimentacao adapterMovimentacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +63,21 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setElevation(0);
 
-        //Code
+        //Adapter
+        adapterMovimentacao = new AdapterMovimentacao(movimentacaos, this);
+
+        //Instancias
         calendarView = findViewById(R.id.calendarView);
         textSaldo = findViewById(R.id.textSaldo);
         textSaudacao = findViewById(R.id.textSaudacao);
+        recyclerView = findViewById(R.id.recyclerMovimentos);
         configureCalendarView();
+
+        //Recycler
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapterMovimentacao);
     }
 
     @Override
