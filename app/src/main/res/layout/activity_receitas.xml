@@ -67,7 +67,7 @@
             android:id="@+id/editCategoria1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Categoria" />
+            android:hint="Descrição" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -85,7 +85,7 @@
             android:id="@+id/editDescricao1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descrição" />
+            android:hint="Categoria" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
