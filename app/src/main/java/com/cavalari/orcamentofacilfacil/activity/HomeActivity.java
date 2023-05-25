@@ -16,19 +16,31 @@ import android.view.View;
 import android.widget.TextView;
 
 
-
 import com.cavalari.orcamentofacilfacil.R;
+import com.cavalari.orcamentofacilfacil.helper.Base64Custom;
+import com.cavalari.orcamentofacilfacil.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
+
+import java.text.DecimalFormat;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
     private MaterialCalendarView calendarView;
     private TextView textSaudacao, textSaldo;
-    private FirebaseAuth auth;
+    private Double despesaTotal = 0.0;
+    private Double receitaTotal = 0.0;
+    private Double resumoUsuario = 0.0;
+    private FirebaseAuth auth = appsettings.getFireBaseAutentificacao();
+    ;
+    private DatabaseReference ref = appsettings.getFirebaseDataBase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,7 @@ public class HomeActivity extends AppCompatActivity {
         textSaldo = findViewById(R.id.textSaldo);
         textSaudacao = findViewById(R.id.textSaudacao);
         configureCalendarView();
+        recuperarResumo();
     }
 
     public void adicionarDespesas(View view) {
@@ -56,9 +69,9 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(new Intent(this, ReceitasActivity.class));
     }
 
-    public void configureCalendarView(){
+    public void configureCalendarView() {
         CharSequence meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
-        calendarView.setTitleMonths( meses );
+        calendarView.setTitleMonths(meses);
         calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
@@ -75,12 +88,36 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menuSair){
-            auth = appsettings.getFireBaseAutentificacao();
+        if (item.getItemId() == R.id.menuSair) {
             auth.signOut();
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void recuperarResumo() {
+        String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
+        DatabaseReference usuario = ref.child("usuarios").child(idUsuario);
+        usuario.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Usuario usuario1 = snapshot.getValue(Usuario.class);
+                despesaTotal = usuario1.getDespesaTotal();
+                receitaTotal = usuario1.getReceitaTotal();
+                resumoUsuario = receitaTotal - despesaTotal;
+
+                DecimalFormat decimalFormat = new DecimalFormat("0.##");
+                String resultFormart = decimalFormat.format( resumoUsuario );
+
+                textSaudacao.setText("Olá, "+ usuario1.getNome());
+                textSaldo.setText("R$ "+resultFormart);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

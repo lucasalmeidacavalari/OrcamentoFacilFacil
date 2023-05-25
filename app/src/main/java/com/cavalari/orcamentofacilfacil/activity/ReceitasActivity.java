@@ -56,6 +56,7 @@ public class ReceitasActivity extends AppCompatActivity {
             receitaTotal += movimentacao.getValor();
             atualizaReceita();
             movimentacao.salvar();
+            finish();
         }
     }
 
