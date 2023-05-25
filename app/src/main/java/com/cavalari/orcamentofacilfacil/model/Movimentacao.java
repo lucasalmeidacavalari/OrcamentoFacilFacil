@@ -15,7 +15,7 @@ public class Movimentacao {
     public Movimentacao() {
     }
 
-    public void salvar(){
+    public void salvar() {
         //FireBase
         DatabaseReference ref = appsettings.getFirebaseDataBase();
         FirebaseAuth auth = appsettings.getFireBaseAutentificacao();

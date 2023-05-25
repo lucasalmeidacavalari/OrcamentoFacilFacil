@@ -47,7 +47,7 @@ public class CadastroActivity extends AppCompatActivity {
 
                 // Validação
 
-                if (!txtNome.isEmpty() && !txtEmail.isEmpty() && !txtSenha.isEmpty()) {
+                if (!txtNome.isEmpty() || !txtEmail.isEmpty() || !txtSenha.isEmpty()) {
                     usuario = new Usuario();
                     usuario.setEmail(txtEmail);
                     usuario.setNome(txtNome);
