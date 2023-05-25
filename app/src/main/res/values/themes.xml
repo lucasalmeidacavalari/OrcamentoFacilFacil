@@ -24,5 +24,8 @@
         <item name="android:colorAccent">@color/colorAccentReceitas</item>
     </style>
 
-    <style name="Theme.OrcamentoFacilFacil" parent="Base.Theme.OrcamentoFacilFacil" />
+    <style name="Theme.OrcamentoFacilFacil" parent="Theme.Material3.DayNight" >
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

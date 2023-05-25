@@ -8,6 +8,8 @@
     android:fitsSystemWindows="true"
     tools:context=".activity.HomeActivity">
 
+    <include layout="@layout/content_home"></include>
+
 
 
     <com.github.clans.fab.FloatingActionMenu
