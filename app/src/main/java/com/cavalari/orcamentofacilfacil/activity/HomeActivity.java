@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,11 +46,14 @@ public class HomeActivity extends AppCompatActivity {
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
+    private String mesAno;
     private List<Movimentacao> movimentacaos = new ArrayList<>();
     private FirebaseAuth auth = appsettings.getFireBaseAutentificacao();
     private DatabaseReference ref = appsettings.getFirebaseDataBase();
+    private DatabaseReference moveRef;
     private DatabaseReference usuarioref;
-    private ValueEventListener valueEventListener;
+    private ValueEventListener valueEventListenerUsuario;
+    private ValueEventListener valueEventListenerMovimentacoes;
     private AdapterMovimentacao adapterMovimentacao;
 
     @Override
@@ -82,13 +86,15 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        recuperarResumo();
+        recureResumo();
+        recupereMovimentacoes();
         super.onStart();
     }
 
     @Override
     protected void onStop() {
-        usuarioref.removeEventListener(valueEventListener);
+        usuarioref.removeEventListener(valueEventListenerUsuario);
+        moveRef.removeEventListener(valueEventListenerMovimentacoes);
         super.onStop();
     }
 
@@ -119,18 +125,24 @@ public class HomeActivity extends AppCompatActivity {
     public void configureCalendarView() {
         CharSequence meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
         calendarView.setTitleMonths(meses);
+        CalendarDay day = calendarView.getCurrentDate();
+        String mes = String.format("%02d",day.getMonth());
+        mesAno = String.valueOf(mes+""+day.getYear());
         calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-
+                String mes = String.format("%02d",date.getMonth());
+                mesAno = String.valueOf(mes+""+date.getYear());
+                moveRef.removeEventListener(valueEventListenerMovimentacoes);
+                recupereMovimentacoes();
             }
         });
     }
 
-    public void recuperarResumo() {
+    public void recureResumo() {
         String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
         usuarioref = ref.child("usuarios").child(idUsuario);
-        valueEventListener = usuarioref.addValueEventListener(new ValueEventListener() {
+        valueEventListenerUsuario = usuarioref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Usuario usuario1 = snapshot.getValue(Usuario.class);
@@ -152,4 +164,28 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    public void recupereMovimentacoes(){
+        String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
+        Log.i("Test", mesAno);
+        moveRef = ref.child("movimentacao")
+                .child(idUsuario)
+                .child(mesAno);
+
+        valueEventListenerMovimentacoes = moveRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                movimentacaos.clear();
+                for (DataSnapshot dados: snapshot.getChildren()){
+                    Movimentacao movimentacao = dados.getValue(Movimentacao.class);
+                    movimentacaos.add(movimentacao);
+                }
+                adapterMovimentacao.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }
