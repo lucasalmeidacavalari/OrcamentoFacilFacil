@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.cavalari.orcamentofacilfacil.R;
 import com.cavalari.orcamentofacilfacil.config.appsettings;
+import com.cavalari.orcamentofacilfacil.helper.Base64Custom;
 import com.cavalari.orcamentofacilfacil.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -68,6 +69,9 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+                    String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
+                    usuario.setIdUsuario(idUsuario);
+                    usuario.Salvar();
                     finish();
                 }else{
                     String excessao;

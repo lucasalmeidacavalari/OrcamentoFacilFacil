@@ -1,12 +1,24 @@
 package com.cavalari.orcamentofacilfacil.model;
 
+import com.cavalari.orcamentofacilfacil.config.appsettings;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
 public class Usuario {
+    private String idUsuario;
     private String nome;
     private String email;
     private String senha;
 
     public Usuario(){
 
+    }
+
+    public void Salvar(){
+        DatabaseReference firebase = appsettings.getFirebaseDataBase();
+        firebase.child("usuarios")
+                .child(this.idUsuario)
+                .setValue(this);
     }
 
     public String getNome() {
@@ -25,11 +37,21 @@ public class Usuario {
         this.email = email;
     }
 
+    @Exclude
     public String getSenha() {
         return senha;
     }
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    @Exclude
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }
