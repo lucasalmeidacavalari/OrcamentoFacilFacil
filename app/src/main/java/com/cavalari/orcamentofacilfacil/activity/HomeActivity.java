@@ -39,8 +39,9 @@ public class HomeActivity extends AppCompatActivity {
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
     private FirebaseAuth auth = appsettings.getFireBaseAutentificacao();
-    ;
     private DatabaseReference ref = appsettings.getFirebaseDataBase();
+    private DatabaseReference usuarioref;
+    private ValueEventListener valueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,34 @@ public class HomeActivity extends AppCompatActivity {
         textSaldo = findViewById(R.id.textSaldo);
         textSaudacao = findViewById(R.id.textSaudacao);
         configureCalendarView();
+    }
+
+    @Override
+    protected void onStart() {
         recuperarResumo();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        usuarioref.removeEventListener(valueEventListener);
+        super.onStop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menuSair) {
+            auth.signOut();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void adicionarDespesas(View view) {
@@ -80,26 +108,10 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menuSair) {
-            auth.signOut();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void recuperarResumo() {
         String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
-        DatabaseReference usuario = ref.child("usuarios").child(idUsuario);
-        usuario.addValueEventListener(new ValueEventListener() {
+        usuarioref = ref.child("usuarios").child(idUsuario);
+        valueEventListener = usuarioref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Usuario usuario1 = snapshot.getValue(Usuario.class);
@@ -108,10 +120,10 @@ public class HomeActivity extends AppCompatActivity {
                 resumoUsuario = receitaTotal - despesaTotal;
 
                 DecimalFormat decimalFormat = new DecimalFormat("0.##");
-                String resultFormart = decimalFormat.format( resumoUsuario );
+                String resultFormart = decimalFormat.format(resumoUsuario);
 
-                textSaudacao.setText("Olá, "+ usuario1.getNome());
-                textSaldo.setText("R$ "+resultFormart);
+                textSaudacao.setText("Olá, " + usuario1.getNome());
+                textSaldo.setText("R$ " + resultFormart);
             }
 
             @Override
@@ -120,4 +132,5 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
 }
