@@ -49,7 +49,7 @@
             android:id="@+id/editData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ex: 12/03/2001" />
+            android:hint="12/03/2001" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

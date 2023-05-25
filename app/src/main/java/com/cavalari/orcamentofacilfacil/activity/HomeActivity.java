@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,9 +35,10 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -155,11 +155,13 @@ public class HomeActivity extends AppCompatActivity {
                 receitaTotal = usuario1.getReceitaTotal();
                 resumoUsuario = receitaTotal - despesaTotal;
 
-                DecimalFormat decimalFormat = new DecimalFormat("0.##");
-                String resultFormart = decimalFormat.format(resumoUsuario);
+                Locale locale = new Locale("pt", "BR");
+                NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+                numberFormat.setGroupingUsed(true);
+                String resumoFormatado = numberFormat.format(resumoUsuario);
 
                 textSaudacao.setText("Olá, " + usuario1.getNome());
-                textSaldo.setText("R$ " + resultFormart);
+                textSaldo.setText(resumoFormatado);
             }
 
             @Override
@@ -250,6 +252,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void atualizaSaldo(){
-
+        String idUsuario = Base64Custom.codificarBase64(auth.getCurrentUser().getEmail());
+        usuarioref = ref.child("usuarios").child(idUsuario);
+        if (movimentacao.getTipo().equals("r")){
+            receitaTotal = receitaTotal - movimentacao.getValor();
+            usuarioref.child("receitaTotal").setValue(receitaTotal);
+        }
+        if (movimentacao.getTipo().equals("d")){
+            despesaTotal = despesaTotal - movimentacao.getValor();
+            usuarioref.child("despesaTotal").setValue(despesaTotal);
+        }
     }
 }

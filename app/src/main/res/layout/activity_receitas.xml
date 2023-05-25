@@ -49,7 +49,7 @@
             android:id="@+id/editData1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ex: 12/03/2001" />
+            android:hint="12/03/2001" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -67,7 +67,7 @@
             android:id="@+id/editCategoria1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ex: salário" />
+            android:hint="Categoria" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -85,7 +85,7 @@
             android:id="@+id/editDescricao1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ex: salário mensal" />
+            android:hint="Descrição" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
