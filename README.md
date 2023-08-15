@@ -1,7 +1,5 @@
 # OrçamentoFácilFácil - Aplicativo de Controle de Despesas
 
-![Logo do OrçamentoFácilFácil](logo.png) *(Você pode adicionar aqui uma imagem da logo do seu aplicativo, se tiver uma.)*
-
 O OrçamentoFácilFácil é um aplicativo de Controle de Despesas desenvolvido em Java utilizando o Android Studio. Ele foi criado como parte de um trabalho acadêmico com o objetivo de proporcionar uma ferramenta intuitiva para o gerenciamento das finanças pessoais.
 
 ## Descrição
